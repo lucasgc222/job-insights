@@ -7,17 +7,11 @@ class ProcessSalaries(ProcessJobs):
         super().__init__()
 
     def get_max_salary(self) -> int:
-        salaries = []
-        for job in self.jobs_list:
-            if job["max_salary"].isdigit():
-                salaries.append(int(job["max_salary"]))
+        salaries = self.get_salary_by_column_type("max_salary")
         return max(salaries)
 
     def get_min_salary(self) -> int:
-        salaries = []
-        for job in self.jobs_list:
-            if job["min_salary"].isdigit():
-                salaries.append(int(job["min_salary"]))
+        salaries = self.get_salary_by_column_type("min_salary")
         return min(salaries)
 
     def matches_salary_range(self, job: Dict, salary: Union[int, str]) -> bool:
@@ -50,3 +44,13 @@ class ProcessSalaries(ProcessJobs):
                 continue
 
         return filtered
+
+    def get_salary_by_column_type(self, type: str) -> List:
+        if type not in ['min_salary', 'max_salary']:
+            raise TypeError("Invalid type")
+
+        salaries = []
+        for job in self.jobs_list:
+            if job[type].isdigit():
+                salaries.append(int(job[type]))
+        return salaries
